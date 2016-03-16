@@ -69,6 +69,7 @@
     [self addYLabelMark];
 }
 
+//画柱子
 -(void)drawBar{
 
     //    保存顶点的X坐标

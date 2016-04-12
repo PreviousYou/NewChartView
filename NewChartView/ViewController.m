@@ -9,21 +9,37 @@
 #import "ViewController.h"
 #import "PVLineChartView.h"
 #import "PVBarChartView.h"
-@interface ViewController ()
+#import "PVPieChartView.h"
 
+@interface ViewController ()
+{
+    PVPieChartView * pieChartView;
+    PVBarChartView *barChartView;
+    PVLineChartView *lineChartView;
+}
 @end
 
 @implementation ViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+}
 
-    [self doWithCreatBarChart];
-//    [self doWithCreatLineChart];
+- (void)doWithCreatPieChart{
+ 
+    pieChartView = [[PVPieChartView alloc] initWithFrame:self.view.bounds];
+    
+    pieChartView.valueArray = @[@"280", @"255", @"308", @"273", @"236", @"267"];
+    pieChartView.nameArray = @[@"一年级", @"二年级", @"三年级", @"四年级", @"五年级", @"六年级"];
+    pieChartView.colorArray = @[[UIColor redColor],[UIColor orangeColor],[UIColor grayColor],[UIColor purpleColor],[UIColor cyanColor],[UIColor greenColor]];
+    
+    [self.view addSubview:pieChartView];
+    
+    [pieChartView startDrawPieForChart];
 }
 
 -(void)doWithCreatBarChart{
-    PVBarChartView *barChartView=[[PVBarChartView alloc]initWithFrame:[UIScreen mainScreen].bounds];
+    barChartView = [[PVBarChartView alloc]initWithFrame:CGRectMake(0, 20, self.view.frame.size.width, 300)];
     
     barChartView.maxValue=15.0;
     
@@ -43,7 +59,7 @@
 }
 
 -(void)doWithCreatLineChart{
-    PVLineChartView *lineChartView=[[PVLineChartView alloc]initWithFrame:[UIScreen mainScreen].bounds];
+    lineChartView = [[PVLineChartView alloc]initWithFrame:CGRectMake(0, 20, self.view.frame.size.width, 300)];
     
     lineChartView.maxValue=15.0;
     
@@ -65,9 +81,16 @@
     [lineChartView startDrawLineForChart];
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+- (IBAction)creatChartViewAction:(UIButton *)sender {
+//    
+//    [pieChartView removeFromSuperview];
+//    [self doWithCreatPieChart];
+    
+//    [barChartView removeFromSuperview];
+//    [self doWithCreatBarChart];
+    
+    [lineChartView removeFromSuperview];
+        [self doWithCreatLineChart];
+    
 }
-
 @end

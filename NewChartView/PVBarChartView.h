@@ -33,6 +33,11 @@
  *顶部标记数值颜色
  */
 @property (nonatomic,strong) UIColor *topMarkColor;
+
+/**
+ *动画时间
+ */
+@property (nonatomic) float donation;
 /**
  *开始画图
  */

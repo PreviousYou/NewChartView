@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		363FC0A71CA50FA5009A0150 /* PVPieChartView.m in Sources */ = {isa = PBXBuildFile; fileRef = 363FC0A61CA50FA5009A0150 /* PVPieChartView.m */; };
 		410997401C97E46D0059AADC /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 4109973F1C97E46D0059AADC /* main.m */; };
 		410997431C97E46D0059AADC /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 410997421C97E46D0059AADC /* AppDelegate.m */; };
 		410997461C97E46D0059AADC /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 410997451C97E46D0059AADC /* ViewController.m */; };
@@ -37,6 +38,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		363FC0A51CA50FA5009A0150 /* PVPieChartView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVPieChartView.h; sourceTree = "<group>"; };
+		363FC0A61CA50FA5009A0150 /* PVPieChartView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PVPieChartView.m; sourceTree = "<group>"; };
 		4109973B1C97E46D0059AADC /* NewChartView.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NewChartView.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4109973F1C97E46D0059AADC /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		410997411C97E46D0059AADC /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -115,6 +118,8 @@
 				410997721C97E4C00059AADC /* PVLineChartView.m */,
 				410997741C97E4E00059AADC /* PVBarChartView.h */,
 				410997751C97E4E00059AADC /* PVBarChartView.m */,
+				363FC0A51CA50FA5009A0150 /* PVPieChartView.h */,
+				363FC0A61CA50FA5009A0150 /* PVPieChartView.m */,
 				410997471C97E46D0059AADC /* Main.storyboard */,
 				4109974A1C97E46D0059AADC /* Assets.xcassets */,
 				4109974C1C97E46D0059AADC /* LaunchScreen.storyboard */,
@@ -287,6 +292,7 @@
 				410997461C97E46D0059AADC /* ViewController.m in Sources */,
 				410997431C97E46D0059AADC /* AppDelegate.m in Sources */,
 				410997761C97E4E00059AADC /* PVBarChartView.m in Sources */,
+				363FC0A71CA50FA5009A0150 /* PVPieChartView.m in Sources */,
 				410997401C97E46D0059AADC /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -428,10 +434,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = NewChartView/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = ZuiYue.com.NewChartView;
+				PRODUCT_BUNDLE_IDENTIFIER = com.NewChartView;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -439,10 +448,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = NewChartView/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = ZuiYue.com.NewChartView;
+				PRODUCT_BUNDLE_IDENTIFIER = com.NewChartView;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};

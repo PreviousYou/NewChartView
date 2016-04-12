@@ -10,6 +10,7 @@
 
 @interface ViewController : UIViewController
 
+- (IBAction)creatChartViewAction:(UIButton *)sender;
 
 @end
 

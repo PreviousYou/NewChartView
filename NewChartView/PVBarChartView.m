@@ -10,16 +10,17 @@
 
 
 #define LineChartYRange 45//Y坐标间隔
-#define LineChartTopRange 100//距离顶部高度
+#define LineChartTopRange 15//距离顶部高度
 #define LineChartLeftRange 40//距离左侧距离
-#define LineChartHorizontalCount 5//横线条数
+#define LineChartHorizontalCount 5//纵坐标点数
 @interface PVBarChartView ()
 
 @property(nonatomic, strong) NSMutableArray *xPointArray;//点的x坐标数组
 @property(nonatomic, strong) NSMutableArray *yPointArray;//点的y坐标数组
 @property(nonatomic, strong) NSMutableArray *pointArr;//顶点数组
 @property(nonatomic) float lineChartXRange;//X坐标间隔
-
+@property(nonatomic, strong) UIScrollView *backScrollView;//底部滑动scrollView
+@property(nonatomic) float animationTime;
 @end
 
 @implementation PVBarChartView
@@ -33,17 +34,46 @@
         self.yPointArray=[[NSMutableArray alloc]init];
         self.pointArr=[[NSMutableArray alloc]init];
         self.topMarkColor=[UIColor darkGrayColor];
+        self.animationTime = 3.0f;
     }
     return self;
+}
+
+/**
+ *  初始化scrollView
+ */
+- (void)doWithCreatBackScrollView{
+    
+    self.backScrollView = [[UIScrollView alloc] initWithFrame:self.bounds];
+    
+    self.backScrollView.showsHorizontalScrollIndicator = NO;
+    
+    self.backScrollView.contentSize = CGSizeMake(LineChartLeftRange + 30 + self.xValueArr.count * _lineChartXRange, self.frame.size.height);
+    
+    [self addSubview:self.backScrollView];
+
 }
 
 -(void)setYValueArr:(NSArray *)yValueArr{
     _yValueArr=yValueArr;
 }
 
+- (void)setDonation:(float)donation{
+    _donation = donation;
+}
+
 -(void)setXValueArr:(NSArray *)xValueArr{
     _xValueArr=xValueArr;
-    _lineChartXRange=(self.frame.size.width-40-30)/_xValueArr.count;
+    
+    float width = (self.frame.size.width-LineChartLeftRange-30)/_xValueArr.count;
+    
+    if (width > 20) {
+        _lineChartXRange=(self.frame.size.width-LineChartLeftRange-30)/_xValueArr.count;
+    }else{
+        _lineChartXRange = 20;
+    }
+    
+    [self doWithCreatBackScrollView];
 }
 
 -(void)setTopMarkColor:(UIColor *)topMarkColor{
@@ -90,31 +120,49 @@
         [self.pointArr addObject:value];
         [self addXLabelMark:point andIndex:i];
     }
+    
     //    画柱子
+    UIBezierPath * bezierLine = [UIBezierPath bezierPath];
+    CAShapeLayer * shapeLayer = [CAShapeLayer layer];
+    shapeLayer.strokeColor = self.barColor.CGColor;
+    shapeLayer.fillColor = [self.barColor CGColor];
+    shapeLayer.lineWidth = 0.6 * self.lineChartXRange;
+    [self.backScrollView.layer addSublayer:shapeLayer];
+    
     for (int i=0; i<self.xValueArr.count; i++) {
-        CGPoint point1=CGPointMake(LineChartLeftRange+self.lineChartXRange/5+i*self.lineChartXRange, LineChartTopRange+LineChartHorizontalCount*LineChartYRange);
-        float hiehghtNumber=[self.yValueArr[i] floatValue];
-        float height=LineChartTopRange+(1-hiehghtNumber/self.maxValue)*(LineChartHorizontalCount*LineChartYRange);
-        CGPoint point2=CGPointMake(LineChartLeftRange+self.lineChartXRange/5+i*self.lineChartXRange, height);
-        CGPoint point3=CGPointMake(LineChartLeftRange+4*self.lineChartXRange/5+i*self.lineChartXRange, height);
-        CGPoint point4=CGPointMake(LineChartLeftRange+4*self.lineChartXRange/5+i*self.lineChartXRange, LineChartTopRange+LineChartHorizontalCount*LineChartYRange);
         
-        UIBezierPath * path = [UIBezierPath bezierPath];
-        CAShapeLayer * shapeLayer = [CAShapeLayer layer];
-        [path moveToPoint:point1];
-        [path addLineToPoint:point2];
-        [path addLineToPoint:point3];
-        [path addLineToPoint:point4];
+        CGPoint point1 = CGPointMake(LineChartLeftRange+self.lineChartXRange / 2+i*self.lineChartXRange, LineChartTopRange+LineChartHorizontalCount*LineChartYRange);
         
-        [path closePath];
-        shapeLayer.path = path.CGPath;
-        shapeLayer.strokeColor = self.barColor.CGColor;
-        shapeLayer.fillColor = [self.barColor CGColor];
-        shapeLayer.lineWidth = 0;
-        [self.layer addSublayer:shapeLayer];
+        float hiehghtNumber = [self.yValueArr[i] floatValue];
+        float height = LineChartTopRange + (1-hiehghtNumber / self.maxValue) *(LineChartHorizontalCount * LineChartYRange);
+        CGPoint point2 = CGPointMake(LineChartLeftRange + self.lineChartXRange / 2 + i * self.lineChartXRange, height);
         
+        [bezierLine moveToPoint:point1];
+        [bezierLine addLineToPoint:point2];
+
         [self addTopMark:[self.pointArr[i] CGPointValue] andIndex:i];
     }
+    
+    shapeLayer.path = bezierLine.CGPath;
+
+    CABasicAnimation *pathAnimation = [CABasicAnimation animationWithKeyPath:@"strokeEnd"];
+    
+    if (self.donation == 0) {
+        if (self.xValueArr.count * 0.3 < 3) {
+            pathAnimation.duration = self.xValueArr.count * 0.3 < 3;
+        }else{
+            pathAnimation.duration = self.animationTime;
+        }
+    }else{
+        pathAnimation.duration = self.donation;
+    }
+    
+    pathAnimation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+    pathAnimation.fromValue = [NSNumber numberWithFloat:0.0f];
+    pathAnimation.toValue = [NSNumber numberWithFloat:1.f];
+    pathAnimation.autoreverses = NO;
+    [shapeLayer addAnimation:pathAnimation forKey:@"strokeEndAnimation"];
+    shapeLayer.strokeEnd = 1.f;
     
 }
 
@@ -124,9 +172,13 @@
         UILabel *titleLable=[[UILabel alloc]initWithFrame:CGRectMake(point.x, point.y-15, self.lineChartXRange, 15)];
         titleLable.textAlignment=NSTextAlignmentCenter;
         titleLable.text=self.yValueArr[index];
-        titleLable.font=[UIFont systemFontOfSize:self.lineChartXRange/3];
+        if (self.lineChartXRange/3>14) {
+            titleLable.font=[UIFont systemFontOfSize:14];
+        }else{
+            titleLable.font=[UIFont systemFontOfSize:self.lineChartXRange/3];
+        }
         titleLable.textColor=self.topMarkColor;
-        [self addSubview:titleLable];
+        [self.backScrollView addSubview:titleLable];
     }
 }
 
@@ -144,7 +196,7 @@
         shapeLayer.strokeColor = [UIColor lightGrayColor].CGColor;
         shapeLayer.fillColor = [[UIColor whiteColor] CGColor];
         shapeLayer.lineWidth = 0.3f;
-        [self.layer addSublayer:shapeLayer];
+        [self.backScrollView.layer addSublayer:shapeLayer];
     }
 }
 
@@ -159,7 +211,7 @@
     shapeLayer.path = path.CGPath;
     shapeLayer.strokeColor = [UIColor lightGrayColor].CGColor;
     shapeLayer.lineWidth = 0.3f;
-    [self.layer addSublayer:shapeLayer];
+    [self.backScrollView.layer addSublayer:shapeLayer];
     //右侧竖线
     UIBezierPath * path2 = [UIBezierPath bezierPath];
     CAShapeLayer * shapeLayer2 = [CAShapeLayer layer];
@@ -169,7 +221,7 @@
     shapeLayer2.path = path2.CGPath;
     shapeLayer2.strokeColor = [UIColor lightGrayColor].CGColor;
     shapeLayer2.lineWidth = 0.3f;
-    [self.layer addSublayer:shapeLayer2];
+    [self.backScrollView.layer addSublayer:shapeLayer2];
 }
 
 //设置x轴标记label
@@ -180,7 +232,7 @@
     label.font = [UIFont systemFontOfSize:10.f];
     label.textAlignment = NSTextAlignmentCenter;
     label.text = self.xValueArr[index];
-    [self addSubview:label];
+    [self.backScrollView addSubview:label];
 }
 
 //设置y轴标记label
@@ -191,7 +243,7 @@
         label.font = [UIFont systemFontOfSize:10.f];
         label.textAlignment = NSTextAlignmentRight;
         label.text = [NSString stringWithFormat:@"%.1f",i*self.maxValue/LineChartHorizontalCount];
-        [self addSubview:label];
+        [self.backScrollView addSubview:label];
     }
 }
 @end
